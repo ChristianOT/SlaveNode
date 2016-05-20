@@ -19,6 +19,8 @@ jar {
 
 repositories {
     mavenCentral()
+	maven { url "https://m2.neo4j.org" }
+	maven { url "https://repo.spring.io/libs-release" }
 }
 
 sourceCompatibility = 1.8
@@ -30,9 +32,10 @@ dependencies {
 	compile 'org.springframework.batch:spring-batch-integration:3.0.6.RELEASE'
 	compile 'org.springframework.batch:spring-batch-core:3.0.6.RELEASE'
     compile("org.apache.activemq:activemq-broker")
-	compile("com.h2database:h2")
-	compile("org.springframework.boot:spring-boot-starter-data-jpa")
-    //compile files ('./libs/Yoink-0.0.1.jar')
+	compile("org.springframework.boot:spring-boot-starter-batch")
+	compile group: 'org.springframework.data', name: 'spring-data-neo4j', version: '4.1.1.RELEASE'
+	compile 'org.hibernate:hibernate-validator'
+
     testCompile("junit:junit")
 }
 
