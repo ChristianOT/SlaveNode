@@ -3,38 +3,46 @@ package org.gradle.domain;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 
+/**
+ * This domain model is adjusted for an atom of a pdbml file. Is set as a neo4j
+ * entity.
+ * 
+ * @author Christian Ouali Turki
+ *
+ */
 @NodeEntity
 public class Atom {
 
 	@GraphId
 	private Long id;
-	
-	
-	private String index;
-	
+
 	private String element;
 
-	
-	private String groupPDBx;
-	
-	private String labelCompId;
-	
-	private String chain;
-
-	
 	private Double x;
-	
+
 	private Double y;
-	
+
 	private Double z;
 
-	public String getIndex() {
-		return index;
-	}
+	/*
+	 * the atom id in the pdbml file
+	 */
+	private String index;
 
-	public void setIndex(String index) {
-		this.index = index;
-	}
+	/*
+	 * either ATOM (belongs to protein) or HETATM (ligand or solvent)
+	 */
+	private String groupPDBx;
+
+	/*
+	 * label of the component (e.g. amino acid or HOH)
+	 */
+	private String labelCompId;
+
+	/*
+	 * multiple chains can occur in a protein
+	 */
+	private String chain;
 
 	public String getElement() {
 		return element;
@@ -42,30 +50,6 @@ public class Atom {
 
 	public void setElement(String element) {
 		this.element = element;
-	}
-
-	public String getGroupPDBx() {
-		return groupPDBx;
-	}
-
-	public void setGroupPDBx(String groupPDBx) {
-		this.groupPDBx = groupPDBx;
-	}
-
-	public String getLabelCompId() {
-		return labelCompId;
-	}
-
-	public void setLabelCompId(String labelCompId) {
-		this.labelCompId = labelCompId;
-	}
-
-	public String getChain() {
-		return chain;
-	}
-
-	public void setChain(String chain) {
-		this.chain = chain;
 	}
 
 	public Double getX() {
@@ -90,6 +74,38 @@ public class Atom {
 
 	public void setZ(Double z) {
 		this.z = z;
+	}
+
+	public String getIndex() {
+		return index;
+	}
+
+	public void setIndex(String index) {
+		this.index = index;
+	}
+
+	public String getGroupPDBx() {
+		return groupPDBx;
+	}
+
+	public void setGroupPDBx(String groupPDBx) {
+		this.groupPDBx = groupPDBx;
+	}
+
+	public String getLabelCompId() {
+		return labelCompId;
+	}
+
+	public void setLabelCompId(String labelCompId) {
+		this.labelCompId = labelCompId;
+	}
+
+	public String getChain() {
+		return chain;
+	}
+
+	public void setChain(String chain) {
+		this.chain = chain;
 	}
 
 	@Override

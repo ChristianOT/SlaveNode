@@ -6,18 +6,28 @@ import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+/**
+ * This domain model is adjusted the molecular system of a pdbml file. Is set as
+ * a neo4j entity.
+ * 
+ * @author Christian Ouali Turki
+ *
+ */
 @NodeEntity
 public class MolecularSystem {
 
 	@GraphId
 	private Long id;
-	
+
 	private String nameOfSystem;
 	public Integer numberOfMolecules;
 	public Integer numberOfAtoms;
-	
-	/*@RelatedTo*/@Relationship(type="MOLECULE", direction=Relationship.UNDIRECTED)
-	public /*@Fetch */HashSet<Molecule> molecules = new HashSet<Molecule>();
+
+	/*
+	 * Set of molecules. @Relationship enables the relation between two domain models.
+	 */
+	@Relationship(type = "MOLECULE", direction = Relationship.UNDIRECTED)
+	public HashSet<Molecule> molecules = new HashSet<Molecule>();
 
 	public String getNameOfSystem() {
 		return nameOfSystem;
@@ -57,4 +67,12 @@ public class MolecularSystem {
 				+ ", numberOfAtoms=" + numberOfAtoms + ", molecules=" + molecules + "]";
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
 }

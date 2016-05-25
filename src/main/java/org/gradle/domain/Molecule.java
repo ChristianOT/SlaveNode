@@ -7,7 +7,13 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
 
-@NodeEntity
+/**
+ * This domain model is adjusted a molecule of a pdbml file. Is set as
+ * a neo4j entity.
+ * 
+ * @author Christian Ouali Turki
+ *
+ */@NodeEntity
 public class Molecule {
 
 	@GraphId
@@ -16,8 +22,11 @@ public class Molecule {
 	private String fileName;
 	public Integer atomCount = 0;
 	
-	@Relationship(type="ATOM",direction=Relationship.UNDIRECTED)//@RelatedTo(type="ATOM", direction=Direction.BOTH)
-	public /*@Fetch */HashSet<Atom> atoms = new HashSet<Atom>();
+	/*
+	 * Set of atoms. @Relationship enables the relation between two domain models.
+	 */
+	@Relationship(type="ATOM",direction=Relationship.UNDIRECTED)
+	public HashSet<Atom> atoms = new HashSet<Atom>();
 
 	public Integer getAtomCount() {
 		return atomCount;

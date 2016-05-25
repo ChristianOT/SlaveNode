@@ -28,21 +28,31 @@ import org.springframework.jms.config.SimpleJmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.util.FileSystemUtils;
-//import org.wallerlab.yoink.Yoink;
 
+/**
+ * Main class of the SlaveNode.
+ * 
+ * @author Christian Ouali Turki
+ *
+ */
 @SpringBootApplication
 @EnableJms
 public class SlaveNode {
 
-	private static final Logger log = LoggerFactory.getLogger(SlaveNode.class);
-	/*---- Autowired ----*/
+	/**
+	 * getting copy of application context
+	 */
 	@Autowired
 	ConfigurableApplicationContext context;
 
 	@Autowired
 	MolecularSystemRepository msr;
 
-	/*---- Beans ----*/
+	 /**
+	  * setting the ConnectionFactory for jms communication
+	  * 
+	  * @return a ConnectionFactory
+	  */
 	@Bean
 	ConnectionFactory connectionFactory() {
 		ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
@@ -50,6 +60,12 @@ public class SlaveNode {
 		return connectionFactory;
 	}
 
+	/**
+	 * ListenerContainerFactory for listening to jms queues.
+	 * 
+	 * @param connectionFactory
+	 * @return JmsListenerContainerFactory
+	 */
 	@Bean
 	JmsListenerContainerFactory<?> myJmsContainerFactory(ConnectionFactory connectionFactory) {
 		SimpleJmsListenerContainerFactory factory = new SimpleJmsListenerContainerFactory();
@@ -57,20 +73,28 @@ public class SlaveNode {
 		return factory;
 	}
 
-	/*---- JMS Messaging ----*/
-	// Wait for message of the MasterNode
-	@JmsListener(destination = "yoink-request", containerFactory = "myJmsContainerFactory", concurrency = "1")
+	/**
+	 * JmsListener, that is waiting for messages to arrive in the request queue. The
+	 * message is processed with the process method. Concurrency is set to 1, but can be increased
+	 * to get more messages at once from the queue. The messages will than also be processed 
+	 * concurrently.
+	 * 
+	 * @param message
+	 * @throws JMSException
+	 * @throws InterruptedException
+	 */
+	@JmsListener(destination = "request", containerFactory = "myJmsContainerFactory", concurrency = "1")
 	public void receiveMessage(String message) throws Exception {
-		log.info("Received " + message);
+		System.out.println("Received " + message);
 		process(message);
 		createAnswer("good Job!");
-		log.info("Job done. Sending answer.");
-		// context.close();
+		System.out.println("Job done. Sending answer.");
 		FileSystemUtils.deleteRecursively(new File("activemq-data"));
 	}
 
 	/*
-	 * process, which SN is supposed to execute
+	 * Process method, currently just printing every atom of a MolecularSystem
+	 * to the console.
 	 */
 	public void process(String message) throws Exception {
 		List<String> mss = new ArrayList<String>();
@@ -87,11 +111,9 @@ public class SlaveNode {
 		}
 	}
 
-	// return mss;
-	
-
 	/*
-	 * answer for MN created to signal the end of the jab
+	 * Creating and sending answer for MasterNode at the end of the job.
+	 *  Message will be send to respond queue
 	 */
 	public void createAnswer(final String string) {
 		MessageCreator messageCreator = new MessageCreator() {
@@ -101,11 +123,10 @@ public class SlaveNode {
 			}
 		};
 		JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
-		log.info("Sending a new answer.");
-		jmsTemplate.send("mailbox-answer", messageCreator);
+		System.out.println("Sending a new answer.");
+		jmsTemplate.send("respond", messageCreator);
 	}
 
-	/*---- Main ----*/
 	public static void main(String[] args) {
 		FileSystemUtils.deleteRecursively(new File("activemq-data"));
 		ConfigurableApplicationContext context = SpringApplication.run(SlaveNode.class, args);
